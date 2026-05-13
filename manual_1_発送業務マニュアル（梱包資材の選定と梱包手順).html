@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>発送業務マニュアル（梱包資材の選定と梱包手順)</title>
+<style>
+body { font-family: -apple-system, "Hiragino Sans", "Yu Gothic", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; line-height: 1.7; color: #333; background: #f8f9fa; }
+h1 { color: #685021; border-bottom: 3px solid #c39f59; padding-bottom: 8px; }
+h2 { color: #8b6f47; margin-top: 28px; }
+h3 { color: #685021; }
+.card { background: white; border-radius: 12px; padding: 24px; margin: 16px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.idx a { display: block; padding: 16px 20px; background: white; margin: 12px 0; border-radius: 10px; text-decoration: none; color: #333; border-left: 4px solid #c39f59; transition: all .2s; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+.idx a:hover { transform: translateX(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-left-color: #685021; }
+.idx .title { font-size: 1.1em; font-weight: bold; color: #685021; }
+.idx .date { color: #999; font-size: 0.85em; margin-top: 4px; }
+.back { display: inline-block; margin: 12px 0; padding: 8px 16px; background: #685021; color: white; text-decoration: none; border-radius: 6px; }
+.back:hover { background: #8b6f47; }
+.mermaid-box { background: #fafafa; padding: 16px; border-radius: 8px; margin: 16px 0; overflow-x: auto; }
+img { max-width: 100%; height: auto; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+table td, table th { border: 1px solid #ddd; padding: 8px; }
+table th { background: #f1ebd9; }
+@media print { body { background: white; max-width: none; } .back { display: none; } .card { box-shadow: none; } }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true, theme:"base", themeVariables:{primaryColor:"#c39f59",primaryBorderColor:"#8b6f47",primaryTextColor:"#333",lineColor:"#8b6f47"}});</script>
+</head>
+<body>
+<a class="back" href="./">← 一覧に戻る</a>
+<div class="card">
+<h1>発送業務マニュアル（梱包資材の選定と梱包手順)</h1>
+<div style="color:#999;font-size:0.9em;">作成: 2026/4/17</div>
+<hr>
+<h1>梱包資材の選定と梱包手順</h1>
+
+<h2>梱包資材の種類</h2>
+当社では、以下の梱包資材を利用しています。
+<ul>
+  <li>封筒2種類</li>
+  <li>宅配袋2種類</li>
+  <li>段ボール</li>
+  <li>プチプチ</li>
+  <li>OPP袋</li>
+</ul>
+
+<h2>梱包資材の選定と梱包手順</h2>
+<div class="step-box">
+  <h3>ステップ1: 商品を確認する</h3>
+  <p>商品を確認し、割れ物またはブリキ看板であるかどうかを判断します。</p>
+</div>
+
+<div class="mermaid-container"><pre class="mermaid">graph TD
+  A[📦 商品を確認する] --&gt; B{🤔 割れ物またはブリキ看板か}
+  B --&gt;|はい| C[📦 プチプチで梱包]
+  B --&gt;|いいえ| D[📦 OPP袋で梱包]
+  C --&gt; E[✅ 梱包完了]
+  D --&gt; E</pre></div>
+
+<div class="step-box">
+  <h3>ステップ2: 梱包資材を選定する</h3>
+  <p>以下のフローチャートに従って梱包資材を選びます。</p>
+  <ul>
+    <li>割れ物またはブリキ看板: プチプチを利用します。</li>
+    <li>割れ物またはブリキ看板以外: OPP袋を利用します。</li>
+  </ul>
+</div>
+
+<div class="step-box">
+  <h3>ステップ3: 商品の大きさに合わせて梱包する</h3>
+  <p>商品の大きさに合わせて、適切な梱包資材を利用して梱包します。</p>
+  <ul>
+    <li>段ボール: 大きな商品に利用します。</li>
+    <li>封筒: 小さな商品に利用します。</li>
+    <li>宅配袋: 中型の商品に利用します。</li>
+  </ul>
+</div>
+
+<div class="note-box">
+  <h3>注意事項</h3>
+  <p>商品の大きさと梱包資材の大きさを確認し、適切な梱包を行ってください。</p><p><br></p><p>何か問題や困ったことが起きたときは、困ったとき連絡シートを利用してください。</p><p style="outline: rgb(195, 159, 89) dashed 1.77778px; outline-offset: 2px;"><a href="https://docs.google.com/spreadsheets/d/19EvKkvD3glCDs1TsKtc3NgykaGHmNBSFc56ZZGXmB0w/edit?hl=ja&amp;gid=0#gid=0" target="_blank" style="color: rgb(104, 80, 33);">https://docs.google.com/spreadsheets/d/19EvKkvD3glCDs1TsKtc3NgykaGHmNBSFc56ZZGXmB0w/edit?hl=ja&amp;gid=0#gid=0</a></p>
+</div>
+
+<div class="warning-box">
+  <h3>警告</h3>
+  <p>梱包が不十分な場合、商品が破損する可能性があります。十分に注意して梱包してください。</p>
+</div>
+</div>
+<div class="card"><h2>フローチャート</h2><div class="mermaid-box"><div class="mermaid">graph TD
+  A[📦 商品を確認する] --&gt; B{🤔 割れ物またはブリキ看板か}
+  B --&gt;|はい| C[📦 プチプチで梱包]
+  B --&gt;|いいえ| D[📦 OPP袋で梱包]
+  C --&gt; E[✅ 梱包完了]
+  D --&gt; E</div></div>
+</div>
+<a class="back" href="./">← 一覧に戻る</a>
+</body>
+</html>

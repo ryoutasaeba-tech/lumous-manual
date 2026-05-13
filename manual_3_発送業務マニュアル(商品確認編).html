@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>発送業務マニュアル(商品確認編)</title>
+<style>
+body { font-family: -apple-system, "Hiragino Sans", "Yu Gothic", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; line-height: 1.7; color: #333; background: #f8f9fa; }
+h1 { color: #685021; border-bottom: 3px solid #c39f59; padding-bottom: 8px; }
+h2 { color: #8b6f47; margin-top: 28px; }
+h3 { color: #685021; }
+.card { background: white; border-radius: 12px; padding: 24px; margin: 16px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.idx a { display: block; padding: 16px 20px; background: white; margin: 12px 0; border-radius: 10px; text-decoration: none; color: #333; border-left: 4px solid #c39f59; transition: all .2s; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+.idx a:hover { transform: translateX(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-left-color: #685021; }
+.idx .title { font-size: 1.1em; font-weight: bold; color: #685021; }
+.idx .date { color: #999; font-size: 0.85em; margin-top: 4px; }
+.back { display: inline-block; margin: 12px 0; padding: 8px 16px; background: #685021; color: white; text-decoration: none; border-radius: 6px; }
+.back:hover { background: #8b6f47; }
+.mermaid-box { background: #fafafa; padding: 16px; border-radius: 8px; margin: 16px 0; overflow-x: auto; }
+img { max-width: 100%; height: auto; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+table td, table th { border: 1px solid #ddd; padding: 8px; }
+table th { background: #f1ebd9; }
+@media print { body { background: white; max-width: none; } .back { display: none; } .card { box-shadow: none; } }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true, theme:"base", themeVariables:{primaryColor:"#c39f59",primaryBorderColor:"#8b6f47",primaryTextColor:"#333",lineColor:"#8b6f47"}});</script>
+</head>
+<body>
+<a class="back" href="./">← 一覧に戻る</a>
+<div class="card">
+<h1>発送業務マニュアル(商品確認編)</h1>
+<div style="color:#999;font-size:0.9em;">作成: 2026/4/17</div>
+<hr>
+<h1>発送業務マニュアル(商品確認編)</h1>
+
+<h2>最初の宛名ラベルを開く</h2>
+
+<div class="step-box">
+  <p>宛名ラベル印刷用を開く: <a href="https://docs.google.com/spreadsheets/d/1NSpm231CjkMTzZSDesNS3aRZHE2XMVdRUAGgzQ1mgmk/edit?gid=859509031#gid=859509031" target="_blank">Googleスプレッドシート</a></p>
+</div>
+
+<h2>範囲指定して印刷をする</h2>
+
+<div class="step-box">
+  <p>範囲を指定して印刷をかけます。</p><div class="video-wrapper"><video src="" controls="" data-video-id="vid_1776413904750_1w1yy2"></video><button class="vid-delete" onclick="this.parentElement.remove()">×</button></div>
+</div>
+
+<h2>商品名をコピーして在庫システムで検索をかける</h2>
+
+<div class="step-box">
+  <p>在庫システムを開く：<span style="background-color: rgb(248, 249, 250);"><a href="https://quiet-treacle-b4e5e7.netlify.app/" target="_blank">https://quiet-treacle-b4e5e7.netlify.app/</a></span></p><p>商品名をコピーして在庫システムで検索をかけます。</p>
+</div><div class="video-wrapper"><video src="" controls="" data-video-id="vid_1776413905005_3a8776"></video><button class="vid-delete" onclick="this.parentElement.remove()">×</button></div>
+
+<h2>在庫システムに表示されたSKUを確認</h2>
+
+<div class="step-box">
+  <p>在庫システムに表示されたSKUを確認します。</p>
+</div>
+
+<div class="mermaid-container"><pre class="mermaid">graph TD
+  A[📝 SKUを確認] --&gt; B{🔍 ブリキ看板か}
+  B --&gt;|はい| C[📝 3個目のアルファベットを確認]
+  B --&gt;|いいえ| D[📸 画像を確認]
+  C --&gt;|アルファベットあり| E[👀 同じ表記のある段ボールから探す]
+  C --&gt;|アルファベットなし| F[📸 ブリキ看板の絵を確認]
+  D --&gt; G[🏢 店舗の棚から商品を探す]
+  E --&gt; H[✔️ 商品を発送]
+  F --&gt; I[🏢 店舗に貼り付けてあるブリキ看板から探す]
+  G --&gt; H
+  I --&gt; H</pre></div>
+
+<h2>注意事項</h2>
+
+<div class="note-box">
+  <p>ムーミン商品は基本1階にある。それ以外は1階と2階から探す。</p>
+  <p>ムーミン以外の商品は2階にあることが多い。</p><p><br></p><p>何か問題や困ったことが起きたときは、困ったとき連絡シートを利用してください。</p><p><a href="https://docs.google.com/spreadsheets/d/19EvKkvD3glCDs1TsKtc3NgykaGHmNBSFc56ZZGXmB0w/edit?hl=ja&amp;gid=0#gid=0" target="_blank">https://docs.google.com/spreadsheets/d/19EvKkvD3glCDs1TsKtc3NgykaGHmNBSFc56ZZGXmB0w/edit?hl=ja&amp;gid=0#gid=0</a></p>
+</div>
+
+<h2>警告</h2>
+
+<div class="warning-box">
+  <p>SKUの表記が異なる場合があるので注意する。</p>
+</div>
+</div>
+<div class="card"><h2>フローチャート</h2><div class="mermaid-box"><div class="mermaid">graph TD
+  A[📝 SKUを確認] --&gt; B{🔍 ブリキ看板か}
+  B --&gt;|はい| C[📝 3個目のアルファベットを確認]
+  B --&gt;|いいえ| D[📸 画像を確認]
+  C --&gt;|アルファベットあり| E[👀 同じ表記のある段ボールから探す]
+  C --&gt;|アルファベットなし| F[📸 ブリキ看板の絵を確認]
+  D --&gt; G[🏢 店舗の棚から商品を探す]
+  E --&gt; H[✔️ 商品を発送]
+  F --&gt; I[🏢 店舗に貼り付けてあるブリキ看板から探す]
+  G --&gt; H
+  I --&gt; H</div></div>
+</div>
+<a class="back" href="./">← 一覧に戻る</a>
+</body>
+</html>
