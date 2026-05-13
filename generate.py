@@ -41,9 +41,23 @@ def slug(s, i):
     return f"manual_{i}_{s[:40]}"
 
 
+VID_DIR = OUT / 'videos'
+VIDEO_FILES = {f.stem: f.name for f in VID_DIR.iterdir() if f.is_file()} if VID_DIR.exists() else {}
+
+
+def inject_video_src(html_str):
+    """<video data-video-id="vid_xxx"> に src="videos/vid_xxx.mp4" を埋め込む"""
+    def repl(match):
+        vid_id = match.group(1)
+        if vid_id in VIDEO_FILES:
+            return f'<video src="videos/{VIDEO_FILES[vid_id]}" controls data-video-id="{vid_id}" style="max-width:100%;height:auto;"></video>'
+        return f'<video controls data-video-id="{vid_id}" style="max-width:100%;height:auto;background:#eee;color:#999;padding:20px;">動画未取得: {vid_id}</video>'
+    return re.sub(r'<video[^>]*data-video-id="([^"]+)"[^>]*></video>', repl, html_str)
+
+
 def render_manual(m, idx):
     title = m.get('title', f'マニュアル{idx}')
-    html_body = m.get('html', '')
+    html_body = inject_video_src(m.get('html', ''))
     mermaids = m.get('mermaidCodes', [])
     date = m.get('date', '')
 
