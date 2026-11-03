@@ -2,10 +2,11 @@ import { chromium } from 'playwright';
 import fs from 'fs';
 import path from 'path';
 
-const OUT_DIR = '/home/ryota/lumous-manual-public/videos';
+const OUT_DIR = process.env.LUMOUS_VIDEO_DIR || '/home/ryota/lumous-manual-public/videos';
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
 const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
+try {
 const context = await browser.newContext();
 const page = await context.newPage();
 
@@ -36,10 +37,18 @@ for (const v of videos) {
   const mime = m[1];
   const ext = mime.includes('mp4') ? 'mp4' : mime.includes('webm') ? 'webm' : mime.includes('quicktime') ? 'mov' : 'mp4';
   const buf = Buffer.from(m[2], 'base64');
-  const outPath = path.join(OUT_DIR, `${v.id}.${ext}`);
+  // id に ../ などが入っていても、保存先のフォルダの外に書かないようにする
+  const safeId = path.basename(String(v.id)).replace(/[^A-Za-z0-9_.-]/g, '_');
+  const outPath = path.join(OUT_DIR, `${safeId}.${ext}`);
   fs.writeFileSync(outPath, buf);
   console.log(`  ✓ ${v.id}.${ext} (${(buf.length/1024/1024).toFixed(1)} MB)`);
 }
 
-await browser.close();
+if (videos.length === 0) {
+  console.error('動画が0件でした(localhost:3456 が起動しているか確認してください)');
+  process.exitCode = 1;
+}
 console.log(`Done. Videos saved to ${OUT_DIR}`);
+} finally {
+  await browser.close();  // エラーでもブラウザを必ず閉じる
+}
