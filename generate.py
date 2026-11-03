@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 """user-data.json から複数マニュアルの静的サイトを生成"""
-import json, re, html, os, sys
+import json, re, html, os, sys, datetime
 from pathlib import Path
+from urllib.parse import quote
 
-DATA = Path('/home/ryota/lumous-manual-diagram/user-data.json')
-OUT = Path('/home/ryota/lumous-manual-public')
-
-with DATA.open(encoding='utf-8') as f:
-    data = json.load(f)
-
-manuals = data.get('savedManuals', [])
+# 場所は環境変数で変えられる。決めなければ、今までと同じ場所を使う。
+DATA = Path(os.environ.get('LUMOUS_DATA', '/home/ryota/lumous-manual-diagram/user-data.json'))
+OUT = Path(os.environ.get('LUMOUS_OUT', '/home/ryota/lumous-manual-public'))
 
 CSS = """
 body { font-family: -apple-system, "Hiragino Sans", "Yu Gothic", sans-serif; max-width: 980px; margin: 0 auto; padding: 24px; line-height: 1.7; color: #333; background: #f8f9fa; }
@@ -41,24 +38,41 @@ def slug(s, i):
     return f"manual_{i}_{s[:40]}"
 
 
-VID_DIR = OUT / 'videos'
-VIDEO_FILES = {f.stem: f.name for f in VID_DIR.iterdir() if f.is_file()} if VID_DIR.exists() else {}
+def load_video_files(out):
+    vid_dir = Path(out) / 'videos'
+    return {f.stem: f.name for f in vid_dir.iterdir() if f.is_file()} if vid_dir.exists() else {}
 
 
-def inject_video_src(html_str):
+# 編集画面の「×」ボタン(クリックすると画像・動画が消える)は、公開ページには要らない
+DELETE_BTN_RE = re.compile(r'<button[^>]*class="(?:img|vid)-delete"[^>]*>.*?</button>', re.S)
+
+
+def strip_editor_buttons(html_str):
+    return DELETE_BTN_RE.sub('', html_str)
+
+
+def inline_mermaid_codes(html_str):
+    """本文にすでに入っているフローチャートの中身を集める(重ねて出さないため)"""
+    found = re.findall(r'<pre class="mermaid">(.*?)</pre>', html_str, re.S)
+    return {html.unescape(c).strip() for c in found}
+
+
+def inject_video_src(html_str, VIDEO_FILES):
     """<video data-video-id="vid_xxx"> に src="videos/vid_xxx.mp4" を埋め込む"""
     def repl(match):
         vid_id = match.group(1)
         if vid_id in VIDEO_FILES:
             return f'<video src="videos/{VIDEO_FILES[vid_id]}" controls data-video-id="{vid_id}" style="max-width:100%;height:auto;"></video>'
+        print(f'  ⚠ 警告: 動画ファイルが見つかりません: {vid_id}(公開ページに灰色の枠が出ます)', file=sys.stderr)
         return f'<video controls data-video-id="{vid_id}" style="max-width:100%;height:auto;background:#eee;color:#999;padding:20px;">動画未取得: {vid_id}</video>'
     return re.sub(r'<video[^>]*data-video-id="([^"]+)"[^>]*></video>', repl, html_str)
 
 
-def render_manual(m, idx):
+def render_manual(m, idx, VIDEO_FILES=None):
     title = m.get('title', f'マニュアル{idx}')
-    html_body = inject_video_src(m.get('html', ''))
-    mermaids = m.get('mermaidCodes', [])
+    html_body = strip_editor_buttons(inject_video_src(m.get('html', ''), VIDEO_FILES or {}))
+    already = inline_mermaid_codes(html_body)
+    mermaids = [c for c in m.get('mermaidCodes', []) if c.strip() not in already]
     date = m.get('date', '')
 
     # Mermaidブロックを差し込む(html内のmermaidプレースホルダがなければ末尾に追加)
@@ -90,23 +104,35 @@ def render_manual(m, idx):
     return body
 
 
-# 各マニュアルをHTMLとして書き出し
-links = []
-for i, m in enumerate(manuals):
-    name = slug(m.get('title', ''), i) + '.html'
-    out_path = OUT / name
-    out_path.write_text(render_manual(m, i+1), encoding='utf-8')
-    links.append((name, m.get('title', ''), m.get('date', '')))
-    print(f'  ✓ {name} ({len(out_path.read_bytes())//1024} KB)')
+def main():
+    if not DATA.exists():
+        sys.exit(f'エラー: データファイルがありません: {DATA}')
+    with DATA.open(encoding='utf-8') as f:
+        data = json.load(f)
+    manuals = data.get('savedManuals', [])
+    if not manuals:
+        # 空のまま上書きして、公開ページを空にしてしまうのを防ぐ
+        sys.exit('エラー: マニュアルが0件です。公開ページを空にしないため、何も書き出さずに止めます。')
+    VIDEO_FILES = load_video_files(OUT)
+    # 各マニュアルをHTMLとして書き出し
+    links = []
+    for i, m in enumerate(manuals):
+        name = slug(m.get('title', ''), i) + '.html'
+        out_path = OUT / name
+        out_path.write_text(render_manual(m, i+1, VIDEO_FILES), encoding='utf-8')
+        links.append((name, m.get('title') or '', m.get('date') or ''))
+        print(f'  ✓ {name} ({len(out_path.read_bytes())//1024} KB)')
 
-# index.html (一覧ページ)
-links_html = '\n'.join([
-    f'<a href="./{name}"><div class="title">{html.escape(title)}</div>'
-    f'<div class="date">{html.escape(date)}</div></a>'
-    for name, title, date in links
-])
+    # index.html (一覧ページ)
+    links_html = '\n'.join([
+        f'<a href="./{quote(name)}"><div class="title">{html.escape(title)}</div>'
+        f'<div class="date">{html.escape(date or "")}</div></a>'
+        for name, title, date in links
+    ])
 
-index = f'''<!DOCTYPE html>
+    last_update = str(data.get('lastUpdate') or datetime.date.today().isoformat())
+
+    index = f'''<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -121,10 +147,14 @@ index = f'''<!DOCTYPE html>
 {links_html}
 </div>
 <hr>
-<p style="color:#999;font-size:0.85em;text-align:center;">最終更新: {data.get('lastUpdate','')}</p>
+<p style="color:#999;font-size:0.85em;text-align:center;">最終更新: {html.escape(last_update)}</p>
 </body>
 </html>'''
-(OUT / 'index.html').write_text(index, encoding='utf-8')
-print(f'  ✓ index.html ({len((OUT/"index.html").read_bytes())//1024} KB)')
+    (OUT / 'index.html').write_text(index, encoding='utf-8')
+    print(f'  ✓ index.html ({len((OUT/"index.html").read_bytes())//1024} KB)')
 
-print(f'\nGenerated {len(manuals)} manuals + index')
+    print(f'\nGenerated {len(manuals)} manuals + index')
+
+
+if __name__ == '__main__':
+    main()
